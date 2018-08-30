@@ -1,0 +1,35 @@
+{% extends 'base.html' %} {% block conteudo %}
+<div>
+    <h3>{{post.titulo}}</h3>
+    <small>{{post.data_criacao}}</small>
+    <p>
+        {{post.conteudo}}
+    </p>
+    <a href="{% url 'index' %}">Voltar</a>
+
+    <form method="post">
+        {% csrf_token %} {{form.as_p}}
+        <input type="submit">
+    </form>
+
+    <h3>Comentários</h3>
+    {% for c in post.comment_set.all %}
+    <div>
+        <p>
+            {{c.texto}}
+        </p>
+        <small>{{c.usuario.username}}, {{c.data}}</small>
+        {% if c.usuario == user %}
+        <small>
+            <form method="POST" action="{% url 'deletar_comentario' c.id %}">
+                {% csrf_token %}
+                <input type="submit" id="deletar" name="deletar" value="Deletar">
+            </form>
+            <a href="{% url 'editar_comentario' c.id %}">Editar</a>
+        </small>
+        {% endif %}
+    </div>
+
+    {% endfor %}
+</div>
+{% endblock %}
